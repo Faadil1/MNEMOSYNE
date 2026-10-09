@@ -13,7 +13,10 @@ export class GardenAudio {
   ensure() {
     if (this.ctx) { if (this.ctx.state === 'suspended') void this.ctx.resume(); return; }
     try {
-      this.ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+      const audioWindow = window as Window & { webkitAudioContext?: typeof AudioContext };
+      const AudioCtor = audioWindow.AudioContext || audioWindow.webkitAudioContext;
+      if (!AudioCtor) return;
+      this.ctx = new AudioCtor();
     } catch { return; }
     const ctx = this.ctx;
     this.master = ctx.createGain();

@@ -69,17 +69,20 @@ export default function App() {
     const reduced = window.matchMedia?.('(prefers-reduced-motion: reduce)').matches || false;
     const s = createState(reduced);
     stateRef.current = s;
-    audioRef.current.setMuted(true);
+    const audio = audioRef.current;
+    audio.setMuted(true);
     const restored = loadGarden();
     s.flowers = restored.flowers;
+    let initialNotice = '';
+    let initialAnnouncement = '';
     if (restored.migrated) {
       saveGarden(s.flowers);
-      setNotice('Your earlier garden was brought forward. Older versions saved only average vitality.');
+      initialNotice = 'Your earlier garden was brought forward. Older versions saved only average vitality.';
     }
     if (s.flowers.length) {
       const away = Date.now() - restored.savedAt;
-      setAnnounce(`Welcome back. Your garden remembers ${s.flowers.length} memories.`);
-      if (away > 5 * 60 * 1000) setNotice('Welcome back. Time away did not make your memories fade.');
+      initialAnnouncement = `Welcome back. Your garden remembers ${s.flowers.length} memories.`;
+      if (away > 5 * 60 * 1000) initialNotice = 'Welcome back. Time away did not make your memories fade.';
     }
     // Preview is explicitly seeded only when requested, never written on initial load.
     if (new URLSearchParams(location.search).has('demo') && !s.flowers.length) {
@@ -90,7 +93,12 @@ export default function App() {
         s.flowers.push(f);
       });
     }
-    refresh();
+    // Reflect external browser storage after the effect subscribes; avoid synchronous state cascades.
+    const startupFrame = window.requestAnimationFrame(() => {
+      if (initialNotice) setNotice(initialNotice);
+      if (initialAnnouncement) setAnnounce(initialAnnouncement);
+      refresh();
+    });
     const onBlur = () => {
       s.pointer.active = false;
       s.pointer.down = false;
@@ -114,12 +122,13 @@ export default function App() {
     document.addEventListener('visibilitychange', onVisibility);
     motion?.addEventListener?.('change', onMotion);
     return () => {
+      window.cancelAnimationFrame(startupFrame);
       saveGarden(s.flowers);
       window.removeEventListener('blur', onBlur);
       window.removeEventListener('pagehide', onPageHide);
       document.removeEventListener('visibilitychange', onVisibility);
       motion?.removeEventListener?.('change', onMotion);
-      audioRef.current.suspend();
+      audio.suspend();
     };
   }, [refresh]);
 
@@ -127,7 +136,10 @@ export default function App() {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext('2d');
-    if (!ctx) { setFailed(true); return; }
+    if (!ctx) {
+      const failureFrame = window.requestAnimationFrame(() => setFailed(true));
+      return () => window.cancelAnimationFrame(failureFrame);
+    }
     let raf = 0;
     let last = performance.now();
     let saveTick = 0, viewTick = 0;

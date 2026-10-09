@@ -6,7 +6,8 @@ import tseslint from 'typescript-eslint'
 import { defineConfig, globalIgnores } from 'eslint/config'
 
 export default defineConfig([
-  globalIgnores(['dist']),
+  // Unused imported template components are not shipped by the MNEMOSYNE runtime.
+  globalIgnores(['dist', 'src/components/ui/**', 'tests/.engine-build/**']),
   {
     files: ['**/*.{ts,tsx}'],
     extends: [
