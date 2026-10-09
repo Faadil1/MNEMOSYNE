@@ -1,0 +1,28 @@
+name: One-time lockfile normalization
+on:
+  push:
+    branches: [build/mnemosyne-v2-reliability]
+permissions:
+  contents: write
+jobs:
+  repair:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Regenerate lock deterministically for current manifest
+        run: npm install --package-lock-only --ignore-scripts --no-audit --no-fund
+      - name: Commit lock and remove this one-time workflow
+        run: |
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          rm .github/workflows/lockfile-repair.yml
+          git add package-lock.json .github/workflows/lockfile-repair.yml
+          git diff --cached --quiet || git commit -m "chore: normalize npm lockfile for V2 candidate"
+          git push origin HEAD:build/mnemosyne-v2-reliability
