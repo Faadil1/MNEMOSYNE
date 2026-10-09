@@ -16,6 +16,12 @@ Project status: **V2 candidate / not yet publicly promoted**.
 - Competitive Novelty / Product Depth / Visual Experience (ACTIVE): evaluate against adjacent living-poetry experiences with real users, not just code screenshots.
 - Evidence Integrity: `LOCAL` for isolated tests, `NOT_IMPLEMENTED` for shared backend, `UNKNOWN` for live browser until observed.
 
+## Dependency-integrity repair
+
+- The first GitHub Actions attempt failed at `npm ci` because the exported lockfile did not match `package.json`.
+- The preview-only `kimi-plugin-inspect-react` Vite dependency has been removed from the candidate.
+- The lockfile has been regenerated and committed on the feature branch by a one-time workflow. The workflow removed itself afterward. These repairs do **not** prove the subsequent build, lint or browser runtime; CI must rerun on the repaired SHA.
+
 ## Before merge / promotion
 
 1. Pass GitHub Actions for `npm ci`, `npm run test:engine`, `npm run build`, and `npm run lint`; fix source and lockfile together if necessary.
