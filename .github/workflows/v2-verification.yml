@@ -1,0 +1,26 @@
+name: V2 verification
+on:
+  push:
+    branches: [main, build/mnemosyne-v2-reliability]
+  pull_request:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Offline engine regression
+        run: npm run test:engine
+      - name: Build
+        run: npm run build
+      - name: Lint
+        run: npm run lint
