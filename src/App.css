@@ -1,0 +1,35 @@
+.garden-root {background: #060b12; isolation:isolate;}
+.garden-root .control {min-height:44px; border:1px solid rgba(168,148,110,.4); border-radius:999px; padding:0 14px; background:rgba(15,24,33,.82);color:#e5d9c2; font: 11px/1.3 system-ui,sans-serif;letter-spacing:.04em;transition:border-color .2s,background .2s;white-space:nowrap;}
+.garden-root .control:hover{border-color:#d9bd87;background:#25302f;}
+.garden-root .control:focus-visible,.garden-root button:focus-visible{outline:3px solid #eec88b;outline-offset:3px;}
+.garden-root .control.action{border-color:#b69b71;background:#343329;}
+.garden-root .plant-bar {background:linear-gradient(0deg,rgba(4,9,14,1) 0%,rgba(4,9,14,.93) 65%,transparent 100%);}
+.garden-root .empty-display{font-size:clamp(29px,4.3vw,78px);line-height:1.11;letter-spacing:-.045em;font-weight:normal;text-shadow:0 0 60px #c6ad7633;}
+.garden-root .empty-display em{font-style:italic;color:#c7d6ca;font-weight:normal;}
+.garden-root .status-strip {font:10px/1.5 system-ui,sans-serif;letter-spacing:.13em;text-transform:uppercase;color:#b5b4a4;}
+.garden-root .selection-pop {text-shadow:0 1px 12px #050b11;}
+.garden-root .journal-panel {animation:slidein .23s ease-out;}
+.garden-root .journal-scrim {animation:fadein .23s ease-out;}
+@keyframes slidein{from{transform:translateX(12%);opacity:.4}to{transform:translateX(0);opacity:1}}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+@media(max-width:600px){
+ .garden-root .topbar{gap:12px;}
+ .garden-root .topbar .control{padding:0 9px;font-size:10px;}
+ .garden-root .topbar h1{font-size:15px;letter-spacing:.15em;}
+ .garden-root .topbar>div:first-child>div{font-size:8px;letter-spacing:.16em;}
+ .garden-root .topbar p{max-width:170px;font-size:10px;}
+ .garden-root .empty-display{font-size:clamp(29px,8vw,44px);}
+ .garden-root .status-strip{top:125px;font-size:9px;}
+}
+@media(max-width:365px){.garden-root .topbar .control{padding:0 7px;}.garden-root .topbar{padding-left:12px;padding-right:12px;gap:8px}.garden-root .topbar .control:nth-child(1){display:none;}}
+@media(prefers-reduced-motion:reduce){.garden-root *, .garden-root *::before,.garden-root *::after{animation-duration:0s!important;transition-duration:0s!important;}}
+@media(max-width:600px){
+ .garden-root .topbar>div:last-child>.control:first-child{display:none;}
+ .garden-root .topbar>div:first-child{min-width:0;}
+ .garden-root .topbar>div:last-child{flex-shrink:0;}
+}
+@media(max-width:365px){
+ .garden-root .topbar p{max-width:126px;}
+ .garden-root .topbar h1{font-size:13px;}
+ .garden-root .topbar .control{font-size:9px;}
+}
